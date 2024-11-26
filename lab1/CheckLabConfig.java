@@ -72,7 +72,7 @@ public class CheckLabConfig {
 
 	public static void main(String[] args) {
 		System.out.println("Testing configuration. This program only works for the " +
-			               "Spring 2021 edition of this course.");
+				"Spring 2021 edition of this course.");
 
 		String yourOS = System.getProperty("os.name").toLowerCase();
 		String yourOSVersion = System.getProperty("os.version");
@@ -95,5 +95,8 @@ public class CheckLabConfig {
 		System.out.println("Your system appears to be configured correctly. You've completed lab 1 setup.");
 	}
 }
+
+
+
 
 
