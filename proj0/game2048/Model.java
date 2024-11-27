@@ -106,6 +106,7 @@ public class Model extends Observable {
      *    value, then the leading two tiles in the direction of motion merge,
      *    and the trailing tile does not.
      * */
+    //4--
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
@@ -136,8 +137,17 @@ public class Model extends Observable {
     /** Returns true if at least one space on the Board is empty.
      *  Empty spaces are stored as null.
      * */
+    //1--(完成)
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+        int size=b.size();
+       for(int col=0;col<size;col++) {
+           for (int row = 0; row < size; row++) {
+               if (b.tile(col, row) == null) {
+                   return true;
+               }
+           }
+       }
         return false;
     }
 
@@ -146,8 +156,26 @@ public class Model extends Observable {
      * Maximum valid value is given by MAX_PIECE. Note that
      * given a Tile object t, we get its value with t.value().
      */
+    //2--
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+        int size=b.size();
+
+        for(int col=0;col<size;col++)
+        {
+            for(int row=0;row<size;row++)
+            {
+                if(b.tile(col,row)==null)
+                {
+                    continue;
+                }
+                else if(b.tile(col,row).value() == MAX_PIECE )
+                {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
@@ -157,6 +185,7 @@ public class Model extends Observable {
      * 1. There is at least one empty space on the board.
      * 2. There are two adjacent tiles with the same value.
      */
+    //3--
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
         return false;
