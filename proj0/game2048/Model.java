@@ -107,7 +107,7 @@ public class Model extends Observable {
      *    value, then the leading two tiles in the direction of motion merge,
      *    and the trailing tile does not.
      * */
-    //4--
+    //4--(完成)
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
@@ -117,12 +117,13 @@ public class Model extends Observable {
         // changed local variable to true.
 
 
-                board.setViewingPerspective(side);
+        board.setViewingPerspective(side);
 
 
 
         for(int col=0;col< board.size();col++)//每一列
         {
+            boolean[] sign = new boolean[board.size()];
             for(int row=board.size()-2;row>=0;row--)//从第2行开始
             {
                 Tile t=board.tile(col,row);
@@ -133,11 +134,12 @@ public class Model extends Observable {
                     {
                         if(board.tile(col,i)!=null)//如果空格上的空格是有的
                         {
-                            if(t.value()==board.tile(col,i).value())//相同
+                            if(t.value()==board.tile(col,i).value()&&!sign[i])//相同
                             {
                                 board.move(col,i,t);//合并
                                 changed=true;
                                 score+=t.value()*2;
+                                sign[i]=true;
                             }
                             else//不相同
                             {
