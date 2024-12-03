@@ -118,9 +118,6 @@ public class Model extends Observable {
 
 
         board.setViewingPerspective(side);
-
-
-
         for(int col=0;col< board.size();col++)//每一列
         {
             boolean[] sign = new boolean[board.size()];
