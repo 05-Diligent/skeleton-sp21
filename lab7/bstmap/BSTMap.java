@@ -1,0 +1,108 @@
+package bstmap;
+
+import java.util.Iterator;
+import java.util.Set;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+
+public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
+    private class Node {
+        K key;
+        V value;
+        Node left, right;
+        Node(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+    private Node root;
+    private int size;
+
+    public BSTMap() {
+        clear();
+    }
+
+    @Override
+    public void clear() {
+        root = null;
+        size = 0;
+    }
+
+    @Override
+    public boolean containsKey(K key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key 不能为 null");
+        }
+        return get(key) != null;
+    }
+
+    @Override
+    public V get(K key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key 不能为 null");
+        }
+        return getHelp(root,key);
+    }
+    private V getHelp(Node x, K key) {
+        if (x == null) {
+            return null;
+        }
+        int cmp = key.compareTo(x.key);
+        if (cmp < 0) {
+            return getHelp(x.left, key);
+        } else if (cmp > 0) {
+            return getHelp(x.right, key);
+        } else {
+            return x.value;
+        }
+    }
+
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    @Override
+    public void put(K key, V value) {
+        if (key == null) {
+            throw new IllegalArgumentException("key 不能为 null");
+        }
+        root = putHelp(root,key, value);
+    }
+    private Node putHelp(Node x, K key, V value) {
+        if (key == null) {
+            return null;
+        }
+        int cmp = key.compareTo(x.key);
+        if (cmp < 0) {
+            x.left = putHelp(x.left, key, value);
+        } else if (cmp > 0) {
+            x.right = putHelp(x.right, key, value);
+        } else {
+            x.value = value;
+        }
+        return x;
+    }
+    @Override
+    public Set<K> keySet() {
+        throw new IllegalArgumentException("key 不能为 null");
+    }
+
+    @Override
+    public V remove(K key) {
+        throw new IllegalArgumentException("key 不能为 null");
+    }
+
+    @Override
+    public V remove(K key, V value) {
+        throw new IllegalArgumentException("key 不能为 null");
+    }
+
+    @Override
+    public Iterator<K> iterator() {
+        throw new IllegalArgumentException("key 不能为 null");
+    }
+
+
+}
