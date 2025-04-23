@@ -41,17 +41,17 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
         if (key == null) {
             throw new IllegalArgumentException("key 不能为 null");
         }
-        return getHelp(root,key);
+        return get(root,key);
     }
-    private V getHelp(Node x, K key) {
+    private V get(Node x, K key) {
         if (x == null) {
             return null;
         }
         int cmp = key.compareTo(x.key);
         if (cmp < 0) {
-            return getHelp(x.left, key);
+            return get(x.left, key);
         } else if (cmp > 0) {
-            return getHelp(x.right, key);
+            return get(x.right, key);
         } else {
             return x.value;
         }
@@ -68,17 +68,17 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
         if (key == null) {
             throw new IllegalArgumentException("key 不能为 null");
         }
-        root = putHelp(root,key, value);
+        root = put(root,key, value);
     }
-    private Node putHelp(Node x, K key, V value) {
+    private Node put(Node x, K key, V value) {
         if (key == null) {
             return null;
         }
         int cmp = key.compareTo(x.key);
         if (cmp < 0) {
-            x.left = putHelp(x.left, key, value);
+            x.left = put(x.left, key, value);
         } else if (cmp > 0) {
-            x.right = putHelp(x.right, key, value);
+            x.right = put(x.right, key, value);
         } else {
             x.value = value;
         }
@@ -103,6 +103,12 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
     public Iterator<K> iterator() {
         throw new IllegalArgumentException("key 不能为 null");
     }
-
+    public void printInOrder(Node r) {
+        if (r != null) {
+            printInOrder(r.left);
+            System.out.println(r.value);
+            printInOrder(r.right);
+        }
+    }
 
 }
