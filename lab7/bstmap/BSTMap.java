@@ -5,23 +5,46 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
+public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     private class Node {
         K key;
         V value;
         Node left, right;
+
         Node(K key, V value) {
             this.key = key;
             this.value = value;
         }
     }
+
     private Node root;
     private int size;
 
     public BSTMap() {
         clear();
     }
-
+    @Override
+    public void put(K key, V value) {
+        if (key == null) {
+            throw new IllegalArgumentException("key 不能为 null");
+        }
+        root = put(root,key, value);
+    }
+    private Node put(Node x, K key, V value) {
+        if (x == null) {
+            size++;
+            return new Node(key,value);
+        }
+        int cmp = key.compareTo(x.key);
+        if (cmp < 0) {
+            x.left = put(x.left, key, value);
+        } else if (cmp > 0) {
+            x.right = put(x.right, key, value);
+        } else {
+            x.value = value;
+        }
+        return x;
+    }
     @Override
     public void clear() {
         root = null;
@@ -31,9 +54,23 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
     @Override
     public boolean containsKey(K key) {
         if (key == null) {
-            throw new IllegalArgumentException("key 不能为 null");
+            throw new IllegalArgumentException("Key 不能为 null");
         }
-        return get(key) != null;
+        return containsKey(root, key);
+    }
+
+    private boolean containsKey(Node x, K key) {
+        if (x == null) {
+            return false;
+        }
+        int cmp = key.compareTo(x.key);
+        if (cmp < 0) {
+            return containsKey(x.left, key);
+        } else if (cmp > 0) {
+            return containsKey(x.right, key);
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -63,27 +100,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
         return size;
     }
 
-    @Override
-    public void put(K key, V value) {
-        if (key == null) {
-            throw new IllegalArgumentException("key 不能为 null");
-        }
-        root = put(root,key, value);
-    }
-    private Node put(Node x, K key, V value) {
-        if (key == null) {
-            return null;
-        }
-        int cmp = key.compareTo(x.key);
-        if (cmp < 0) {
-            x.left = put(x.left, key, value);
-        } else if (cmp > 0) {
-            x.right = put(x.right, key, value);
-        } else {
-            x.value = value;
-        }
-        return x;
-    }
+
     @Override
     public Set<K> keySet() {
         throw new IllegalArgumentException("key 不能为 null");
