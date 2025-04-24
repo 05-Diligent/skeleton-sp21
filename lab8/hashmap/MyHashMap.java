@@ -1,6 +1,6 @@
 package hashmap;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  *  A hash table-backed Map implementation. Provides amortized constant time
@@ -11,6 +11,9 @@ import java.util.Collection;
  */
 public class MyHashMap<K, V> implements Map61B<K, V> {
 
+
+    private static final int M = 16;
+    private static final double N_M = 0.75;
     /**
      * Protected helper class to store key/value pairs
      * The protected qualifier allows subclass access
@@ -28,11 +31,18 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     /* Instance Variables */
     private Collection<Node>[] buckets;
     // You should probably define some more!
-
+    private int size;
+    private int bucketCount;
+    private double maxLoadFactor;
+    private Set<K> keySet;//便于检查是否存在同个值
     /** Constructors */
-    public MyHashMap() { }
+    public MyHashMap() {
+        this(M, N_M);
+    }
 
-    public MyHashMap(int initialSize) { }
+    public MyHashMap(int initialSize) {
+        this(initialSize, N_M);
+    }
 
     /**
      * MyHashMap constructor that creates a backing array of initialSize.
@@ -41,15 +51,26 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * @param initialSize initial size of backing array
      * @param maxLoad maximum load factor
      */
-    public MyHashMap(int initialSize, double maxLoad) { }
+    public MyHashMap(int initialSize, double maxLoad) {
+        if (initialSize <= 0) {
+            throw new IllegalArgumentException("初始大小必须为正数");
+        }
+        if (maxLoad <= 0) {
+            throw new IllegalArgumentException("最大负载因子必须为正数");
+        }
+        this.bucketCount = initialSize;
+        this.maxLoadFactor = maxLoad;
+        this.size = 0;
+        this.keySet = new HashSet<>();
+        this.buckets = createTable(bucketCount);
+    }
 
     /**
      * Returns a new node to be placed in a hash table bucket
      */
     private Node createNode(K key, V value) {
-        return null;
+        return new Node(key, value);
     }
-
     /**
      * Returns a data structure to be a hash table bucket
      *
@@ -69,7 +90,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * OWN BUCKET DATA STRUCTURES WITH THE NEW OPERATOR!
      */
     protected Collection<Node> createBucket() {
-        return null;
+        return new ArrayList<>();
     }
 
     /**
@@ -82,10 +103,99 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * @param tableSize the size of the table to create
      */
     private Collection<Node>[] createTable(int tableSize) {
-        return null;
+        Collection<Node>[] table = (Collection<Node>[]) new Collection[tableSize];
+        for (int i = 0; i < tableSize; i++) {
+            table[i] = createBucket();
+        }
+        return table;
     }
 
     // TODO: Implement the methods of the Map61B Interface below
     // Your code won't compile until you do so!
+    /** 哈希函数：将键映射到桶的索引 */
+    private int hashIndex(K key) {
+        int hash = key.hashCode() & 0x7fffffff;
+        return hash % bucketCount;
+    }
+    @Override
+    public void clear() {
+        this.bucketCount = M;
+        this.buckets = createTable(bucketCount);
+        this.size = 0;
+        this.keySet.clear();
+    }
+    @Override
+    public boolean containsKey(K key) {
+        int idx = hashIndex(key);
+        for (Node node : buckets[idx]) {
+            if (key.equals(node.key)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    @Override
+    public V get(K key) {
+        int idx = hashIndex(key);
+        for (Node node : buckets[idx]) {
+            if (key.equals(node.key)) {
+                return node.value;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    @Override
+    public void put(K key, V value) {
+        int idx = hashIndex(key);
+        for (Node node : buckets[idx]) {
+            if (key.equals(node.key)) {
+                node.value = value;
+                return;
+            }
+        }
+        buckets[idx].add(createNode(key,value));
+        keySet.add(key);
+        size++;
+        if ((double) size / bucketCount > maxLoadFactor) {
+            resize(bucketCount * 2);
+        }
+    }
+    private void resize(int newBucketCount) {
+        Collection<Node>[] oldBuckets = buckets;
+        buckets = createTable(newBucketCount);
+        int oldSize = size;
+        size = 0;
+        bucketCount = newBucketCount;
+        keySet.clear();
+        for (Collection<Node> bucket : oldBuckets) {
+            for (Node node : bucket) {
+                put(node.key, node.value);
+            }
+        }
+    }
+    @Override
+    public Set<K> keySet() {
+        return new HashSet<>(keySet);
+    }
+
+    @Override
+    public Iterator<K> iterator() {
+        return keySet.iterator();
+    }
+    @Override
+    public V remove(K key) {
+        throw new IllegalArgumentException("key 错误");
+    }
+
+    @Override
+    public V remove(K key, V value) {
+        throw new IllegalArgumentException("key 错误");
+    }
 }
